@@ -45,8 +45,7 @@ function UseBinocular()
         -- Wende Timecycle-Modifier für Fernglas-Effekt an
         SetTimecycleModifier(Config.timecycle)
         SetTimecycleModifierStrength(Config.timecycleStrength)
-        -- Friere Spieler ein, wenn Bewegung nicht erlaubt
-        FreezeEntityPosition(PlayerPedId(), not Config.allowMovement)
+        -- Friere Spieler ein, wenn Bewegung nicht erlaubt (aber nicht während er in der Luft ist)
         if not Config.allowMovement then
             TaskStandStill(PlayerPedId(), -1)
         end
@@ -87,6 +86,18 @@ function UseBinocular()
                 local camRot = GetCamRot(cam, 2)
                 SetEntityHeading(PlayerPedId(), camRot.z)
             end
+            
+            -- Prüfe, ob der Spieler am Boden ist oder springt
+            local isGrounded = IsEntityTouchingEntity(PlayerPedId(), GetHashKey("world"))
+            
+            -- Friere Spieler nur ein, wenn er am Boden ist und Bewegung nicht erlaubt
+            if not Config.allowMovement and isGrounded then
+                FreezeEntityPosition(PlayerPedId(), true)
+            elseif not Config.allowMovement then
+                -- Gebe den Spieler frei, wenn er in der Luft ist
+                FreezeEntityPosition(PlayerPedId(), false)
+            end
+            
             -- Deaktiviere alle störenden Controls während der Nutzung
             DisableControlAction(0, 25, true)
             DisablePlayerFiring(PlayerPedId(), true)
