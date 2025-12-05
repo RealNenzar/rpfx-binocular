@@ -9,6 +9,7 @@ local lastZoomTime = 0
 local initialCamRotZ = 0
 local cumulativeRotation = 0
 local cumulativeRotationX = 0
+local initialPlayerHeading = 0
 
 -- Funktion zum Aufräumen und Zurücksetzen des Fernglas-Modus
 local function CleanupBinoculars()
@@ -65,6 +66,7 @@ function UseBinocular()
         AttachCamToPedBone(cam, PlayerPedId(), 12844, 0.0, 0.5, 0.0, true)
         SetCamRot(cam, 0.0, 0.0, GetEntityHeading(PlayerPedId()))
         initialCamRotZ = GetEntityHeading(PlayerPedId())
+        initialPlayerHeading = GetEntityHeading(PlayerPedId())
         cumulativeRotation = 0
         cumulativeRotationX = 0
         SetCamFov(cam, fov)
@@ -80,9 +82,9 @@ function UseBinocular()
 
             fov = HandleZoomAndCheckRotation(cam, fov)
 
-            -- Drehe Spieler gelegentlich zur Kamera, um Abstürze zu vermeiden
+            -- Drehe Spieler gelegentlich zur Kamera, um Abstürze zu vermeiden (nur zu Fuß)
             rotationCounter = rotationCounter + 1
-            if rotationCounter % 5 == 0 and not IsPedSittingInAnyVehicle(PlayerPedId()) then
+            if rotationCounter % 5 == 0 and GetVehiclePedIsIn(PlayerPedId(), false) == 0 then
                 local camRot = GetCamRot(cam, 2)
                 SetEntityHeading(PlayerPedId(), camRot.z)
             end
@@ -122,6 +124,11 @@ function UseBinocular()
 
     -- Setze alles zurück
     IsUsingBinoculars = false
+
+    -- Stelle die ursprüngliche Spieler-Heading wieder her, aber nicht wenn im Fahrzeug
+    if GetVehiclePedIsIn(PlayerPedId(), false) == 0 then
+        SetEntityHeading(PlayerPedId(), initialPlayerHeading)
+    end
 
     CleanupBinoculars()
 end
