@@ -89,15 +89,9 @@ function UseBinocular()
                 SetEntityHeading(PlayerPedId(), camRot.z)
             end
             
-            -- Prüfe, ob der Spieler am Boden ist oder springt
-            local isGrounded = IsEntityTouchingEntity(PlayerPedId(), GetHashKey("world"))
-            
-            -- Friere Spieler nur ein, wenn er am Boden ist und Bewegung nicht erlaubt
-            if not Config.allowMovement and isGrounded then
+            -- Friere Spieler ein, wenn Bewegung nicht erlaubt (nur zu Fuß)
+            if not Config.allowMovement and not IsPedSittingInAnyVehicle(PlayerPedId()) then
                 FreezeEntityPosition(PlayerPedId(), true)
-            elseif not Config.allowMovement then
-                -- Gebe den Spieler frei, wenn er in der Luft ist
-                FreezeEntityPosition(PlayerPedId(), false)
             end
             
             -- Deaktiviere alle störenden Controls während der Nutzung
@@ -146,6 +140,21 @@ local itemInHandCallback = function(slot)
         end
     end
 end
+
+-- Thread zum Blockieren des Aussteigens aus dem Fahrzeug, während Fernglas aktiv ist
+Citizen.CreateThread(function()
+    while true do
+        Wait(0)
+        if IsUsingBinoculars and IsPedSittingInAnyVehicle(PlayerPedId()) then
+            local ped = PlayerPedId()
+            -- Blockiere den Aussteigen-Control
+            DisableControlAction(0, 47, true)
+            
+            -- Zwinge den Spieler, stillzustehen (verhindert Aussteigen-Animationen)
+            TaskStandStill(ped, 100)
+        end
+    end
+end)
 
 -- Thread zum Registrieren des Callbacks, sobald das Core-Modul verfügbar ist
 Citizen.CreateThread(function()
