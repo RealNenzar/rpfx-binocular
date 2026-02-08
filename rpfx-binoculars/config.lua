@@ -34,7 +34,7 @@ _G.Config = {
     -- WEAZEL NEWS VIDEOKAMERA EINSTELLUNGEN
     -- =====================================================
     WeazelNewsCamera = {
-        itemName = "Weazel News Videokamera", -- Item-Name im Inventar
+        itemName = "Weazel News Videokamera TEST", -- Item-Name im Inventar
         
         -- Einstellungen für Zoom
         fov_max = 70.0, -- Maximale Field of View (größerer Wert bedeutet weniger Zoom)
@@ -69,7 +69,7 @@ _G.Config = {
     -- LEGACY RECORDS VIDEOKAMERA EINSTELLUNGEN
     -- =====================================================
     LegacyRecordsCamera = {
-        itemName = "Legacy Records Videokamera", -- Item-Name im Inventar
+        itemName = "Legacy Records Videokamera TEST", -- Item-Name im Inventar
         
         -- Einstellungen für Zoom
         fov_max = 70.0, -- Maximale Field of View (größerer Wert bedeutet weniger Zoom)
