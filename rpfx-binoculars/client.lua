@@ -29,7 +29,7 @@ local function CleanupDevice()
         cam = nil
     end
     FreezeEntityPosition(PlayerPedId(), false)
-    exports['rpfx-core']:setIngameOverlayActiveExport(true)
+    exports['arcore-core']:setIngameOverlayActiveExport(true)
     DisplayRadar(true)
     currentDeviceConfig = nil
     currentDeviceType = nil
@@ -239,7 +239,7 @@ function UseDevice(deviceType, config)
             DisableControlAction(0, 81, true)
             DisableControlAction(0, 82, true)
             DisplayRadar(false)
-            exports['rpfx-core']:setIngameOverlayActiveExport(false)
+            exports['arcore-core']:setIngameOverlayActiveExport(false)
 
             -- Zeichne Overlay
             if scaleformLoaded then
@@ -358,17 +358,17 @@ end)
 
 -- Thread zum Registrieren des Callbacks, sobald das Core-Modul verfügbar ist
 Citizen.CreateThread(function()
-    while not exports['rpfx-core'] do
+    while not exports['arcore-core'] do
         Citizen.Wait(100)
     end
-    local success = exports['rpfx-core']:onItemInHandChanged(itemInHandCallback)
+    local success = exports['arcore-core']:onItemInHandChanged(itemInHandCallback)
 end)
 
 -- Cleanup beim Stoppen der Ressource
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
         CleanupDevice()
-        exports['rpfx-core']:removeCallback('itemInHandChanged', itemInHandCallback)
+        exports['arcore-core']:removeCallback('itemInHandChanged', itemInHandCallback)
     end
 end)
 
